@@ -7,6 +7,7 @@ int screenHeight = 480;
 int logoWidth    = 200;
 int logoHeight   = 200;
 int framerate    = 30;
+color backgroundColor = 0;
 
 class Logo {
   float x;
@@ -16,7 +17,7 @@ class Logo {
   float xspeed;
   float yspeed;
   int   time;
-  int   outerRadius;
+  int   ringWidth;
   int   innerRadius;
 
   Logo(float xpos, float ypos, int w, int h){
@@ -26,15 +27,16 @@ class Logo {
     height   = h
     xspeed   = 0.2
     yspeed   = 0.2
-    outerRadius = width / 5
-    innerRadius = width / 24
+    ringWidth    = width * 11/60
+    mouldingRadius = width * 4/60
+    centerRadius   = width * (8/60)
   }
 
   void draw() {
     /* text("excitement: "+excitement, 50, 90)*/
     /* text("speed: "+xspeed, 50, 50)*/
     outerRing()
-    innerRing()
+    ringCorners()
     center()
   }
 
@@ -66,43 +68,79 @@ class Logo {
   void outerRing() {
     fill(200)
     noStroke()
-    ellipse(outerRadius + x,
-            outerRadius + y,
-            outerRadius,
-            outerRadius);
-    ellipse(outerRadius + x,
-            height - outerRadius + y,
-            outerRadius,
-            outerRadius);
-    ellipse(width - outerRadius + x,
-            outerRadius + y,
-            outerRadius,
-            outerRadius);
-    ellipse(width - outerRadius + x,
-            height - outerRadius + y,
-            outerRadius,
-            outerRadius);
+    ellipse(ringWidth/2 + x,
+            ringWidth/2 + y,
+            ringWidth,
+            ringWidth);
+    ellipse(ringWidth/2 + x,
+            height - ringWidth/2 + y,
+            ringWidth,
+            ringWidth);
+    ellipse(width - ringWidth/2 + x,
+            ringWidth/2 + y,
+            ringWidth,
+            ringWidth);
+    ellipse(width - ringWidth/2 + x,
+            height - ringWidth/2 + y,
+            ringWidth,
+            ringWidth);
     rectMode(CENTER);
-    rect(outerRadius + x,
+    rect(ringWidth/2 + x,
          y + height/2,
-         outerRadius,
-         height - 2 * outerRadius);
-    rect(width - outerRadius + x,
+         ringWidth,
+         height - ringWidth);
+    rect(width - ringWidth/2 + x,
          y + height/2,
-         outerRadius,
-         height - 2 * outerRadius);
+         ringWidth,
+         height - ringWidth);
     rect(x + width/2,
-         outerRadius + y,
-         height - 2 * outerRadius,
-         outerRadius)
+         ringWidth/2 + y,
+         height - ringWidth,
+         ringWidth)
     rect(x + width/2,
-         height - outerRadius + y,
-         height - 2 * outerRadius,
-         outerRadius)
+         height - ringWidth/2 + y,
+         height - ringWidth,
+         ringWidth)
   }
 
-  void innerRing() {
 
+  void ringCorners() {
+    rectMode(CENTER);
+    // Fill in the corners with patches of white
+    rect(x + ringWidth + mouldingRadius/2,
+         y + ringWidth + mouldingRadius/2,
+         mouldingRadius,
+         mouldingRadius);
+    rect(x + width - (ringWidth + mouldingRadius/2),
+         y + ringWidth + mouldingRadius/2,
+         mouldingRadius+1,
+         mouldingRadius);
+    rect(x + ringWidth + mouldingRadius/2,
+         y + height - (ringWidth + mouldingRadius/2),
+         mouldingRadius+1,
+         mouldingRadius+1);
+    rect(x + width - (ringWidth + mouldingRadius/2),
+         y + height - (ringWidth + mouldingRadius/2),
+         mouldingRadius+1,
+         mouldingRadius+1);
+    // black circles give the illusion of rounded inner corners
+    fill(0)
+    ellipse(x + ringWidth + mouldingRadius + 1,
+            y + ringWidth + mouldingRadius + 1,
+            mouldingRadius*2,
+            mouldingRadius*2);
+    ellipse(x + width - (ringWidth + mouldingRadius + 1),
+            y + ringWidth + mouldingRadius + 1,
+            mouldingRadius*2,
+            mouldingRadius*2);
+    ellipse(x + ringWidth + mouldingRadius + 1,
+            y + height - (ringWidth + mouldingRadius + 1),
+            mouldingRadius*2,
+            mouldingRadius*2);
+    ellipse(x + width - (ringWidth + mouldingRadius + 1),
+            y + height - (ringWidth + mouldingRadius + 1),
+            mouldingRadius*2,
+            mouldingRadius*2);
   }
 
   void center() {
