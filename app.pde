@@ -1,50 +1,76 @@
 // All Examples Written by Casey Reas and Ben Fry
 // unless otherwise stated.
 
+
+int screenWidth  = 640;
+int screenHeight = 480;
+int framerate    = 30;
+
 class Logo {
+  color filler;
   float xpos;
   float ypos;
   int   width;
   int   height;
-  float speed;
+  float xspeed;
+  float yspeed;
+  int   time;
 
-  Logo(float x, float y, int w, int h, float s){
-    xpos   = x;
-    ypos   = y;
-    width  = w;
-    height = h;
-    speed  = s;
+  Logo(float x, float y, int w, int h){
+    xpos     = x
+    ypos     = y
+    width    = w
+    height   = h
+    filler   = 182
+    xspeed   = 0.2
+    yspeed   = 0.2
   }
 
-  void display() {
+  void draw() {
+    /* text("excitement: "+excitement, 50, 90)*/
+    /* text("speed: "+xspeed, 50, 50)*/
     rectMode(CENTER);
-    fill(c);
+    fill(filler);
     rect(xpos, ypos, width, height);
   }
 
   void move() {
+    throttle()
+    bounce()
     xpos = xpos + xspeed;
-    if (xpos > width) {
-      xpos = 0;
+    ypos = ypos + yspeed;
+  }
+
+  void throttle() {
+    time += 1
+    excitement = (0.2 + cos(time) / framerate) / 10
+    xspeed += excitement + random(0.01)
+    yspeed += excitement + random(0.01)
+  }
+
+  void bounce() {
+    if (xpos > (screenWidth - width) || xpos < (width/2)) {
+      xspeed = -xspeed;
+    }
+    if (ypos > (screenHeight - height) || ypos < (height/2)) {
+      yspeed = -yspeed;
     }
   }
 }
 
 void setup(){
-  size(640, 480);
-  frameRate(60);
-  fill(128);
+  size(screenWidth, screenHeight);
+  frameRate(framerate);
   smooth();
 
-  logo = new Logo();
+  logo = new Logo(35, 35, 50, 50);
 
 }
 
 void draw(){
   // draw background
-  fill(0, 12);
-  noStroke();
-  rect(0, 0, width, height);
-
+  background(0)
+  logo.draw()
+  logo.move()
 }
 
