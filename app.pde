@@ -4,6 +4,8 @@
 
 int screenWidth  = 640;
 int screenHeight = 480;
+int logoWidth    = 100;
+int logoHeight   = 100;
 int framerate    = 30;
 
 class Logo {
@@ -29,7 +31,7 @@ class Logo {
   void draw() {
     /* text("excitement: "+excitement, 50, 90)*/
     /* text("speed: "+xspeed, 50, 50)*/
-    rectMode(CENTER);
+    rectMode(CORNER);
     fill(filler);
     rect(xpos, ypos, width, height);
   }
@@ -49,12 +51,14 @@ class Logo {
   }
 
   void bounce() {
-    if (xpos > (screenWidth - width) || xpos < (width/2)) {
-      xspeed = -xspeed;
-    }
-    if (ypos > (screenHeight - height) || ypos < (height/2)) {
-      yspeed = -yspeed;
-    }
+    if (xpos > (screenWidth - width))
+      xspeed = -(abs(xspeed));
+    if (xpos < 0)
+      xspeed = abs(xspeed);
+    if (ypos > (screenHeight - height))
+      yspeed = -abs(yspeed);
+    if (ypos < 0)
+      yspeed = abs(yspeed);
   }
 }
 
@@ -63,7 +67,10 @@ void setup(){
   frameRate(framerate);
   smooth();
 
-  logo = new Logo(35, 35, 50, 50);
+  logo = new Logo(screenWidth/2 - logoWidth/2,
+                  screenHeight/2 - logoHeight/2,
+                  logoWidth,
+                  logoHeight)
 
 }
 
