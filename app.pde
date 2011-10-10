@@ -40,8 +40,7 @@ class Logo {
   }
 
   void draw() {
-    /* text("excitement: "+excitement, 50, 90)*/
-    /* text("speed: "+xspeed, 50, 50)*/
+    // text("angle: "+angle, 50, 90)
     drawOuterRing()
     drawRingCorners()
     drawCenter()
@@ -98,8 +97,8 @@ class Logo {
 
   void followMouse(){
     yspeed = xspeed = 0.0;
-    x += (mouseX - (x + width/2)) / framerate;
-    y += (mouseY - (y + height/2)) / framerate;
+    x += (mouseX - (x + 2 + width/2)) / framerate;
+    y += (mouseY - (y + 2 + height/2)) / framerate;
 
     // maybe return to normal vectors
     if(close(mouseX,
