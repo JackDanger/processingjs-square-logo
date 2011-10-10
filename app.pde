@@ -2,10 +2,10 @@
 // unless otherwise stated.
 
 
-int screenWidth  = 640;
-int screenHeight = 480;
-int logoWidth    = 200;
-int logoHeight   = 200;
+int screenWidth  = 1680;
+int screenHeight = 1050;
+int logoWidth    = 400;
+int logoHeight   = 400;
 int framerate    = 30;
 color backgroundColor = 0;
 
@@ -28,8 +28,9 @@ class Logo {
     xspeed   = 0.2
     yspeed   = 0.2
     ringWidth    = width * 11/60
-    mouldingRadius = width * 4/60
+    mouldingRadius = width * 2/60
     centerRadius   = width * (8/60)
+    centerCorner   = mouldingRadius
   }
 
   void draw() {
@@ -68,44 +69,51 @@ class Logo {
   void outerRing() {
     fill(200)
     noStroke()
-    ellipse(ringWidth/2 + x,
-            ringWidth/2 + y,
-            ringWidth,
-            ringWidth);
-    ellipse(ringWidth/2 + x,
-            height - ringWidth/2 + y,
-            ringWidth,
-            ringWidth);
-    ellipse(width - ringWidth/2 + x,
-            ringWidth/2 + y,
-            ringWidth,
-            ringWidth);
-    ellipse(width - ringWidth/2 + x,
-            height - ringWidth/2 + y,
-            ringWidth,
-            ringWidth);
+    ellipse(ringWidth + x,
+            ringWidth + y,
+            ringWidth*2,
+            ringWidth*2);
+    ellipse(ringWidth + x,
+            height - ringWidth + y,
+            ringWidth*2,
+            ringWidth*2);
+    ellipse(width - ringWidth + x,
+            ringWidth + y,
+            ringWidth*2,
+            ringWidth*2);
+    ellipse(width - ringWidth + x,
+            height - ringWidth + y,
+            ringWidth*2,
+            ringWidth*2);
     rectMode(CENTER);
-    rect(ringWidth/2 + x,
+    rect(x + ringWidth/2,
          y + height/2,
          ringWidth,
-         height - ringWidth);
-    rect(width - ringWidth/2 + x,
+         height - ringWidth*2);
+    rect(x + width - ringWidth/2,
          y + height/2,
          ringWidth,
-         height - ringWidth);
+         height - ringWidth*2);
     rect(x + width/2,
          ringWidth/2 + y,
-         height - ringWidth,
+         height - ringWidth*2,
          ringWidth)
     rect(x + width/2,
          height - ringWidth/2 + y,
-         height - ringWidth,
+         height - ringWidth*2,
          ringWidth)
   }
 
 
   void ringCorners() {
     rectMode(CENTER);
+    // Fill in the center with a black square
+    fill(0)
+    rect(x + width/2,
+         y + height/2,
+         width - ringWidth*2,
+         height - ringWidth*2);
+    fill(200)
     // Fill in the corners with patches of white
     rect(x + ringWidth + mouldingRadius/2,
          y + ringWidth + mouldingRadius/2,
@@ -129,7 +137,7 @@ class Logo {
             y + ringWidth + mouldingRadius + 1,
             mouldingRadius*2,
             mouldingRadius*2);
-    ellipse(x + width - (ringWidth + mouldingRadius + 1),
+    ellipse(x + width - (ringWidth + mouldingRadius),
             y + ringWidth + mouldingRadius + 1,
             mouldingRadius*2,
             mouldingRadius*2);
@@ -144,6 +152,11 @@ class Logo {
   }
 
   void center() {
+    fill(200)
+    rect(x + width/2,
+         y + height/2,
+         centerRadius*2 - centerCorner,
+         centerRadius*2 - centerCorner);
 
   }
 }
