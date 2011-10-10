@@ -2,11 +2,12 @@
 // unless otherwise stated.
 
 
-int screenWidth  = 1680;
-int screenHeight = 1050;
+int screenWidth  = window.innerWidth;
+int screenHeight = window.innerHeight;
 int logoWidth    = 400;
 int logoHeight   = 400;
-int framerate    = 30;
+int framerate    = 60;
+int baseAcceleration = 3;
 color backgroundColor = 0;
 
 class Logo {
@@ -17,8 +18,11 @@ class Logo {
   float xspeed;
   float yspeed;
   int   time;
+  float angle;
   int   ringWidth;
   int   innerRadius;
+  int   lastMousePositionX;
+  int   lastMousePositionY;
 
   Logo(float xpos, float ypos, int w, int h){
     x        = xpos
@@ -31,42 +35,84 @@ class Logo {
     mouldingRadius = width * 2/60
     centerRadius   = width * (8/60)
     centerCorner   = mouldingRadius
+    lastMousePositionX = mouseX
+    lastMousePositionY = mouseY
   }
 
   void draw() {
     /* text("excitement: "+excitement, 50, 90)*/
     /* text("speed: "+xspeed, 50, 50)*/
-    outerRing()
-    ringCorners()
-    center()
+    drawOuterRing()
+    drawRingCorners()
+    drawCenter()
   }
 
   void move() {
-    throttle()
-    bounce()
-    x = x + xspeed;
-    y = y + yspeed;
+    // hit edge of screen?
+    bounce();
+    // set speeds
+    throttle();
+    // is somebody moving a mouse?
+    if(mouseActive()){
+      followMouse()
+    } else {
+      // follow previous vector
+      x = x + xspeed;
+      y = y + yspeed;
+    }
   }
 
   void throttle() {
-    time += 1
-    excitement = (0.2 + cos(time) / framerate) / 10
-    xspeed += excitement + random(0.01)
-    yspeed += excitement + random(0.01)
+
+    time += 1;
+
+    acceleration = baseAcceleration;
+    // start slow
+    if((time / framerate) < 5)
+      acceleration = acceleration * ((time/framerate) / 5)
+
+    // the rate of change of direction varies
+    angle += (random(sin(time / framerate)) - 0.5) / 4
+    // normalize angle from -180 to +180
+    angle = abs(180 + (angle % 360)) - 180
+
+    xspeed = acceleration * cos(radians(angle));
+    yspeed = acceleration * sin(radians(angle));
   }
 
   void bounce() {
-    if (x > (screenWidth - width))
-      xspeed = -(abs(xspeed));
-    if (x < 0)
-      xspeed = abs(xspeed);
-    if (y > (screenHeight - height))
-      yspeed = -abs(yspeed);
-    if (y < 0)
-      yspeed = abs(yspeed);
+    if (x > (screenWidth  - width) || x < 0)
+      angle = 180 - angle;
+    if (y > (screenHeight - height) || y < 0)
+      angle = 360 - angle;
   }
 
-  void outerRing() {
+  bool mouseActive(){
+    if(0 == mouseX && 0 == mouseY)
+      return false;
+    return !close(mouseX,
+                  mouseY,
+                  lastMousePositionX,
+                  lastMousePositionY)
+  }
+
+  void followMouse(){
+    yspeed = xspeed = 0.0;
+    x += (mouseX - (x + width/2)) / framerate;
+    y += (mouseY - (y + height/2)) / framerate;
+
+    // maybe return to normal vectors
+    if(close(mouseX,
+             mouseY,
+             x + width/2,
+             y + height/2)) {
+      time = 0
+      lastMousePositionX = mouseX
+      lastMousePositionY = mouseY
+    }
+  }
+
+  void drawOuterRing() {
     fill(200)
     noStroke()
     ellipse(ringWidth + x,
@@ -105,7 +151,7 @@ class Logo {
   }
 
 
-  void ringCorners() {
+  void drawRingCorners() {
     rectMode(CENTER);
     // Fill in the center with a black square
     fill(0)
@@ -151,13 +197,21 @@ class Logo {
             mouldingRadius*2);
   }
 
-  void center() {
+  void drawCenter() {
     fill(200)
     rect(x + width/2,
          y + height/2,
          centerRadius*2 - centerCorner,
          centerRadius*2 - centerCorner);
 
+  }
+
+  bool close(x1,y1,x2,y2){
+
+    return x1 > x1 - 4 &&
+           x1 < x1 + 4 &&
+           y1 > y2 - 4 &&
+           y1 < y2 + 4
   }
 }
 
@@ -175,6 +229,7 @@ void setup(){
 
 void draw(){
   // draw background
+  smooth()
   background(0)
   logo.draw()
   logo.move()
