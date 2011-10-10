@@ -7,7 +7,7 @@ int screenHeight = window.innerHeight;
 int logoWidth    = 400;
 int logoHeight   = 400;
 int framerate    = 60;
-int baseAcceleration = 3;
+int baseAcceleration = 1;
 color backgroundColor = 0;
 
 class Logo {
